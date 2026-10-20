@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: webapp
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      affinity:
+        nodeAffinity:
+          # 1. The Hard Requirement (Must match)
+          # requiredDuringSchedulingIgnoredDuringExecution:
+          #   nodeSelectorTerms:
+          #   - matchExpressions:
+          #     - key: topology.kubernetes.io/region
+          #       operator: In
+          #       values:
+          #       - us-east-1
+          # 2. The Soft Requirement (Preferred, but optional)
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: disktype
+                operator: In
+                values:
+                - ssd
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - webapp
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: webapp
+          image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.webapp.probePath }}
+              port: {{ .Values.webapp.service.port }}
+            initialDelaySeconds: {{ .Values.webapp.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.webapp.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.webapp.probePath }}
+              port: {{ .Values.webapp.service.port }}
+            initialDelaySeconds: {{ .Values.webapp.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.webapp.readinessProbe.periodSeconds }}
+          ports:
+            - containerPort: {{ .Values.webapp.service.targetPort }}
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mongo.secret.name }}
+                  key: {{ .Values.mongo.secret.usernameKey }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mongo.secret.name }}
+                  key: {{ .Values.mongo.secret.passwordKey }}
+            - name: MONGODB_URI
+              value: "mongodb://$(DB_USERNAME):$(DB_PASSWORD)@mongo-service:{{ .Values.mongo.service.targetPort }}"
+            - name: MONGODB_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mongo.secret.name }}
+                  key: {{ .Values.mongo.secret.dbnameKey }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  type: {{ .Values.webapp.service.type }}
+  selector:
+    app: webapp
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.webapp.service.port }}
+      targetPort: {{ .Values.webapp.service.targetPort }}
+      nodePort: {{ .Values.webapp.service.developmentPort }}

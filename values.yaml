@@ -1,0 +1,35 @@
+mongo:
+  replicaCount: 1
+  image:
+    repository: mongo
+    tag: "8.0"
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  service:
+    port: 27017
+    targetPort: 27017
+  secret:
+    name: mongo-secret
+    usernameKey: mongo-user
+    passwordKey: mongo-password
+    dbnameKey: mongo-db-name
+webapp:
+  image:
+    repository: adamdayniold/crud-mongodb
+    tag: "stage"
+  probePath: "/"
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  service:
+    port: 3000
+    targetPort: 3000
+    developmentPort: 30100
+    type: NodePort

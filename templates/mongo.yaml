@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-stateful
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: mongo
+spec:
+  serviceName: "mongo-headless"
+  replicas: {{ .Values.mongo.replicaCount }}
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongodb
+          image: "{{ .Values.mongo.image.repository }}:{{ .Values.mongo.image.tag }}"
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          ports:
+            - containerPort: {{ .Values.mongo.service.targetPort }}
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.mongo.service.port }}
+            initialDelaySeconds: {{ .Values.mongo.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.mongo.livenessProbe.periodSeconds }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.mongo.service.port }}
+            initialDelaySeconds: {{ .Values.mongo.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.mongo.readinessProbe.periodSeconds }}
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mongo.secret.name }}
+                  key: {{ .Values.mongo.secret.usernameKey }}
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mongo.secret.name }}
+                  key: {{ .Values.mongo.secret.passwordKey }}
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-headless
+spec:
+  clusterIP: None
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mongo.service.port }}
+      targetPort: {{ .Values.mongo.service.targetPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mongo.service.port }}
+      targetPort: {{ .Values.mongo.service.targetPort }}
+
