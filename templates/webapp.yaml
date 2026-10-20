@@ -33,15 +33,16 @@ spec:
                 operator: In
                 values:
                 - ssd
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - webapp
-            topologyKey: "kubernetes.io/hostname"
+        # same pod cannot be in the same node
+        # podAntiAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #   - labelSelector:
+        #       matchExpressions:
+        #       - key: app
+        #         operator: In
+        #         values:
+        #         - webapp
+        #     topologyKey: "kubernetes.io/hostname"
       containers:
         - name: webapp
           image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
