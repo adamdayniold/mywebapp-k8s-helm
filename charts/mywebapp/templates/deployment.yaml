@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webapp-deployment
-  namespace: {{ .Release.Namespace }}
   labels:
     app: webapp
 spec:
@@ -46,22 +45,23 @@ spec:
       containers:
         - name: webapp
           image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
+          imagePullPolicy: {{ .Values.webapp.image.pullPolicy | default "IfNotPresent" }}
           resources:
             requests:
-              memory: 512Mi
-              cpu: 100m
+              memory: "{{ .Values.webapp.resources.requests.memory }}"
+              cpu: "{{ .Values.webapp.resources.requests.cpu }}"
             limits:
-              memory: 512Mi
-              cpu: 500m
+              memory: "{{ .Values.webapp.resources.limits.memory }}"
+              cpu: "{{ .Values.webapp.resources.limits.cpu }}"
           livenessProbe:
             httpGet:
-              path: {{ .Values.webapp.probePath }}
+              path: "{{ .Values.webapp.probePath }}"
               port: {{ .Values.webapp.service.port }}
             initialDelaySeconds: {{ .Values.webapp.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.webapp.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.webapp.probePath }}
+              path: "{{ .Values.webapp.probePath }}"
               port: {{ .Values.webapp.service.port }}
             initialDelaySeconds: {{ .Values.webapp.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.webapp.readinessProbe.periodSeconds }}

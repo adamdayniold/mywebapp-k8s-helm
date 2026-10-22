@@ -3,6 +3,7 @@ mongo:
   image:
     repository: mongo
     tag: "8.0"
+    pullPolicy: IfNotPresent
   livenessProbe:
     initialDelaySeconds: 15
     periodSeconds: 10
@@ -12,6 +13,13 @@ mongo:
   service:
     port: 27017
     targetPort: 27017
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
   secret:
     name: mongo-secret
     usernameKey: mongo-user
@@ -21,6 +29,7 @@ webapp:
   image:
     repository: adamdayniold/crud-mongodb
     tag: "stage"
+    pullPolicy: IfNotPresent
   probePath: "/"
   livenessProbe:
     initialDelaySeconds: 15
@@ -33,3 +42,32 @@ webapp:
     targetPort: 3000
     developmentPort: 30100
     type: NodePort
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 50
+vpa:
+  enabled: true
+  updateMode: "InPlace"
+  minAllowed:
+    cpu: 50m
+    memory: 64Mi
+  maxAllowed:
+    cpu: 1
+    memory: 1Gi
+gateway:
+  enabled: true
+  name: my-gateway
+  namespace: application
+httproute:
+  enabled: true
+  host: "webapp.local"
+

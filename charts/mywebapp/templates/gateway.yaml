@@ -1,8 +1,8 @@
+{{- if .Values.gateway.enabled -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: my-gateway
-  namespace: application
+  name: {{ .Values.gateway.name }}
 spec:
   gatewayClassName: nginx
   listeners:
@@ -24,3 +24,4 @@ spec:
     allowedRoutes:
       namespaces:
         from: All
+{{- end -}}

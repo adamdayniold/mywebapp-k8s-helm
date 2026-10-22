@@ -1,0 +1,66 @@
+# ==========================================
+# 1. Sensitive Credentials & Secrets (CRITICAL)
+# ==========================================
+# Raw unencrypted secrets, private keys, and certificates
+# Ignore raw, unencrypted files and private keys
+*-raw.yaml
+*raw*.yaml
+!*sealed*.yaml
+*.key
+*.crt
+*.pem
+*.pfx
+secrets/
+.env*
+!.env.example
+
+# ==========================================
+# 2. Helm & Kubernetes Local Artifacts
+# ==========================================
+# Helm temporary charts, archives, and dependencies
+*.tgz
+charts/*/charts/
+charts/*/tmp/
+
+# Kubernetes/K3s/OrbStack local state or debug logs
+*.log
+kubeconfig*
+
+# ==========================================
+# 3. Next.js & Node.js Artifacts
+# ==========================================
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production builds and cache
+.next/
+out/
+build/
+dist/
+
+# Next.js telemetry
+.eslintcache
+.tsbuildinfo
+
+# ==========================================
+# 4. Operating System & IDE Files
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs & Editors (VS Code, JetBrains)
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~

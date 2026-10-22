@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongo-stateful
-  namespace: {{ .Release.Namespace }}
   labels:
     app: mongo
 spec:
@@ -19,13 +18,14 @@ spec:
       containers:
         - name: mongodb
           image: "{{ .Values.mongo.image.repository }}:{{ .Values.mongo.image.tag }}"
+          imagePullPolicy: {{ .Values.mongo.image.pullPolicy | default "IfNotPresent" }}
           resources:
             requests:
-              memory: 512Mi
-              cpu: 100m
+              memory: "{{ .Values.mongo.resources.requests.memory }}"
+              cpu: "{{ .Values.mongo.resources.requests.cpu }}"
             limits:
-              memory: 512Mi
-              cpu: 500m
+              memory: "{{ .Values.mongo.resources.limits.memory }}"
+              cpu: "{{ .Values.mongo.resources.limits.cpu }}"
           ports:
             - containerPort: {{ .Values.mongo.service.targetPort }}
           volumeMounts:

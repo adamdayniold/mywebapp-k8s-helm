@@ -2,7 +2,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: app-gateway-developer
-  namespace: application
 rules:
 - apiGroups: ["gateway.networking.k8s.io"]
   resources: ["httproutes"]
@@ -15,7 +14,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: bind-app-developer
-  namespace: application
 subjects:
 - kind: User
   name: mai
