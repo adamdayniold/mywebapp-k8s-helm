@@ -56,7 +56,7 @@ hpa:
   targetCPUUtilizationPercentage: 50
 vpa:
   enabled: true
-  updateMode: "InPlace"
+  updateMode: "Auto"
   minAllowed:
     cpu: 50m
     memory: 64Mi
