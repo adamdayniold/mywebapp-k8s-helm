@@ -8,12 +8,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://grafana.github.io/helm-charts'
-    chart: alloy
-    targetRevision: 0.7.x # Or the latest stable chart version
-    helm:
-      valueFiles:
-        - alloy-values.yaml
+    - repoURL: 'https://grafana.github.io/helm-charts'
+      chart: alloy
+      targetRevision: 0.7.x # Or the latest stable chart version
+      helm:
+        valueFiles:
+          - $values/charts/monitoring/values/alloy-values.yaml
+    - repoURL: 'git@github.com:adamdayniold/mywebapp-k8s-helm.git'
+      targetRevision: HEAD
+      ref: values
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring

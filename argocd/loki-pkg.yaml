@@ -8,12 +8,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://grafana.github.io/helm-charts'
-    chart: loki
-    targetRevision: 6.x.x # Use a stable recent chart version
-    helm:
-      valueFiles:
-        - loki-values.yaml
+    - repoURL: 'https://grafana.github.io/helm-charts'
+      chart: loki
+      targetRevision: 6.x.x # Use a stable recent chart version
+      helm:
+        valueFiles:
+          - $values/charts/monitoring/values/loki-values.yaml
+    - repoURL: 'git@github.com:adamdayniold/mywebapp-k8s-helm.git'
+      targetRevision: HEAD
+      ref: values
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring

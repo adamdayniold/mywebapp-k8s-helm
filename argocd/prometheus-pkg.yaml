@@ -8,12 +8,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://prometheus-community.github.io/helm-charts'
-    chart: kube-prometheus-stack
-    targetRevision: 65.x.x # Or whatever recent stable version matches your setup
-    helm:
-      valueFiles:
-        - prometheus-values.yaml
+    - repoURL: 'https://prometheus-community.github.io/helm-charts'
+      chart: kube-prometheus-stack
+      targetRevision: 65.x.x # Or whatever recent stable version matches your setup
+      helm:
+        valueFiles:
+          - $values/charts/monitoring/values/prometheus-values.yaml
+    - repoURL: 'git@github.com:adamdayniold/mywebapp-k8s-helm.git'
+      targetRevision: HEAD
+      ref: values
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
