@@ -13,7 +13,7 @@ spec:
     targetRevision: 65.x.x # Or whatever recent stable version matches your setup
     helm:
       valueFiles:
-        - ../charts/monitoring/values/prometheus-values.yaml
+        - charts/monitoring/values/prometheus-values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring

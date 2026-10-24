@@ -13,7 +13,7 @@ spec:
     targetRevision: 6.x.x # Use a stable recent chart version
     helm:
       valueFiles:
-        - ../charts/monitoring/values/loki-values.yaml
+        - charts/monitoring/values/loki-values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
