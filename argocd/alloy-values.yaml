@@ -1,0 +1,51 @@
+controller:
+  type: daemonset
+
+alloy:
+  configMap:
+    content: |
+      // Discover Kubernetes pods running on the same node
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Collect logs from standard Kubernetes container output
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          action = "replace"
+          target_label = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          action = "replace"
+          target_label = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          action = "replace"
+          target_label = "container"
+        }
+      }
+
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.endpoint.receiver]
+      }
+
+      // Forward logs to the Loki service we just deployed
+      loki.write "endpoint" {
+        endpoint {
+          url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 100Mi
+  limits:
+    cpu: 200m
+    memory: 300Mi
