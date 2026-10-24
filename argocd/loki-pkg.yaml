@@ -21,30 +21,25 @@ spec:
             replication_factor: 1
           storage:
             type: filesystem
-            filesystem:
-              directory: /tmp/loki/chunks
-          ruler:
-            enable_api: false
         singleBinary:
           replicas: 1
           persistence:
             enabled: false
-          resources:
-            requests:
-              cpu: 100m
-              memory: 200Mi
-            limits:
-              cpu: 300m
-              memory: 500Mi
         backend:
           replicas: 0
         read:
           replicas: 0
         write:
           replicas: 0
-        pulsar:
+        chunksCache:
+          enabled: false
+        resultsCache:
           enabled: false
         minio:
+          enabled: false
+        lokiCanary:
+          enabled: false
+        gateway:
           enabled: false
   destination:
     server: 'https://kubernetes.default.svc'
