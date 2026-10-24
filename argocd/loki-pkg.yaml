@@ -37,8 +37,6 @@ spec:
           enabled: false
         minio:
           enabled: false
-        lokiCanary:
-          enabled: false
         gateway:
           enabled: false
   destination:
