@@ -15,7 +15,7 @@ metadata:
   name: kube-prometheus-stack
   namespace: flux-system
 spec:
-  targetNamespce: monitoring
+  targetNamespace: monitoring
   interval: 10m
   chart:
     spec:
