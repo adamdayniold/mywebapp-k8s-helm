@@ -40,12 +40,6 @@ spec:
       replicas: 1
       persistence:
         enabled: false
-      extraVolumes:
-        - name: temp
-          emptyDir: {}
-      extraVolumeMounts:
-        - name: temp
-          mountPath: /tmp
     backend:
       replicas: 0
     read:
