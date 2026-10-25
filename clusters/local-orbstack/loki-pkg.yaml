@@ -1,0 +1,79 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: grafana-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  type: https
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: loki
+      version: "6.x.x"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-charts
+        namespace: flux-system
+  values:
+    deploymentMode: SingleBinary
+    loki:
+      auth_enabled: false
+      useTestSchema: true
+      commonConfig:
+        replication_factor: 1
+      storage:
+        type: filesystem
+        filesystem:
+          directory: /tmp/loki/chunks
+      schema_config:
+        configs:
+          - from: 2024-04-01
+            store: boltdb-shipper
+            object_store: filesystem
+            schema: v11
+            index:
+              prefix: index_
+              period: 24h
+      ruler:
+        enable_api: false
+    singleBinary:
+      replicas: 1
+      persistence:
+        enabled: false
+      extraVolumes:
+        - name: temp
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: temp
+          mountPath: /tmp
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    minio:
+      enabled: false
+    gateway:
+      enabled: false
+  install:
+    createNamespace: true
+  upgrade:
+    remediation:
+      retries: 3
+  driftDetection:
+    mode: enabled
