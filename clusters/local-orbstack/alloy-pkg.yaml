@@ -4,7 +4,7 @@ metadata:
   name: grafana-alloy
   namespace: flux-system
 spec:
-  targetNamespce: monitoring
+  targetNamespace: monitoring
   interval: 10m
   chart:
     spec:
