@@ -28,7 +28,7 @@ spec:
   values:
     defaultRules:
       create: true
-      appNamespaces: ["application", "argocd"]
+      appNamespaces: ["application", "cert-manager", "nginx-gateway"]
     prometheus:
       prometheusSpec:
         retention: "24h"
