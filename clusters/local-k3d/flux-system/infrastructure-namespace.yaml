@@ -9,10 +9,10 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: ./charts/infrastructure-namespace   # Points directly to your folder path in the repo!
+      chart: ../../../charts/infrastructure-namespace   # Points directly to your folder path in the repo!
       sourceRef:
         kind: GitRepository
-        name: flux-system        # Reuses your main repo source
+        name: flux-systemcd        # Reuses your main repo source
         namespace: flux-system
       interval: 1m
   valuesFrom:

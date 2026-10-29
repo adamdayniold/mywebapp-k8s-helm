@@ -20,4 +20,4 @@ resources:
 configMapGenerator:
   - name: mywebapp-values
     files:
-      - values-k3d.yaml=./charts/mywebapp/values-k3d.yaml
+      - values-k3d.yaml=../../../charts/mywebapp/values-k3d.yaml
