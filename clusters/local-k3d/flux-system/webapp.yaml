@@ -15,8 +15,10 @@ spec:
         name: flux-system        # Reuses your main repo source
         namespace: flux-system
       interval: 1m
-  valuesFiles:
-    - ./charts/mywebapp/values-k3d.yaml
+  valuesFrom:
+    - kind: GitRepository
+      name: flux-system
+      valuesKey: charts/mywebapp/values-k3d.yaml
   install:
     createNamespace: true        # Replaces CreateNamespace=true
   upgrade:
