@@ -16,9 +16,9 @@ spec:
         namespace: flux-system
       interval: 1m
   valuesFrom:
-    - kind: GitRepository
-      name: flux-system
-      valuesKey: charts/mywebapp/values-k3d.yaml
+    - kind: ConfigMap
+      name: mywebapp-values
+      valuesKey: values-k3d.yaml
   install:
     createNamespace: true        # Replaces CreateNamespace=true
   upgrade:

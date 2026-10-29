@@ -15,3 +15,9 @@ resources:
   - prometheus-pkg.yaml
   - sealed-secrets-pkg.yaml
   - webapp.yaml
+
+
+configMapGenerator:
+  - name: mywebapp-values
+    files:
+      - values-k3d.yaml=./charts/mywebapp/values-k3d.yaml
