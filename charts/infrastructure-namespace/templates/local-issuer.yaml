@@ -2,6 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: local-selfsigned-issuer
+  namespace: {{ .Release.Namespace }}
 spec:
   selfSigned: {}
 ---
@@ -9,6 +10,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: local-ca
+  namespace: {{ .Release.Namespace }}
 spec:
   isCA: true
   commonName: "my-local-ca"
@@ -21,6 +23,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: local-ca-issuer
+  namespace: {{ .Release.Namespace }}
 spec:
   ca:
     secretName: local-ca-secret

@@ -1,0 +1,73 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: flux-system
+spec:
+  targetNamespace: monitoring
+  interval: 10m
+  chart:
+    spec:
+      chart: loki
+      version: "6.55.0"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-charts
+        namespace: flux-system
+  values:
+    deploymentMode: SingleBinary
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      storage:
+        type: filesystem
+        filesystem:
+          chunks_directory: /var/loki/chunks
+          rules_directory: /var/loki/rules
+      schema_config:
+        configs:
+          - from: "2024-04-01"
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+      ruler:
+        enable_api: false
+      ring:
+        kvstore:
+          store: inmemory
+    singleBinary:
+      replicas: 1
+      persistence:
+        enabled: false
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          cpu: 200m
+          memory: 512Mi
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    minio:
+      enabled: false
+    gateway:
+      enabled: false
+  install:
+    createNamespace: true
+  upgrade:
+    remediation:
+      retries: 3
+  driftDetection:
+    mode: enabled

@@ -1,0 +1,26 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mywebapp
+  namespace: flux-system
+spec:
+  targetNamespace: application
+  interval: 10m
+  chart:
+    spec:
+      chart: ./charts/mywebapp   # Points directly to your folder path in the repo!
+      sourceRef:
+        kind: GitRepository
+        name: flux-system        # Reuses your main repo source
+        namespace: flux-system
+      interval: 1m
+  valuesFiles:
+    - ./values-k3d.yaml
+  install:
+    createNamespace: true        # Replaces CreateNamespace=true
+  upgrade:
+    remediation:
+      retries: 3
+  driftDetection:
+    mode: enabled                # Replaces selfHeal: true & prune: true
