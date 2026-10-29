@@ -3,21 +3,22 @@ kind: Kustomization
 resources:
   - gotk-components.yaml
   - gotk-sync.yaml
-  - alloy-pkg.yaml
-  - autoscalers-pkg.yaml
-  - cert-manager-pkg.yaml
-  - gateway-api-crds-pkg.yaml
-  - grafana-repo.yaml
-  - infrastructure-namespace.yaml
-  - loki-pkg.yaml
-  - metrics-server-pkg.yaml
-  - ngf-pkg.yaml
-  - prometheus-pkg.yaml
-  - sealed-secrets-pkg.yaml
-  - webapp.yaml
+  - ../alloy-pkg.yaml
+  - ../autoscalers-pkg.yaml
+  - ../cert-manager-pkg.yaml
+  - ../gateway-api-crds-pkg.yaml
+  - ../grafana-repo.yaml
+  - ../infrastructure-namespace.yaml
+  - ../loki-pkg.yaml
+  - ../metrics-server-pkg.yaml
+  - ../ngf-pkg.yaml
+  - ../prometheus-pkg.yaml
+  - ../sealed-secrets-pkg.yaml
+  - ../webapp.yaml
 
 
 configMapGenerator:
   - name: mywebapp-values
+    namespace: flux-system
     files:
       - values-k3d.yaml=../../../charts/mywebapp/values-k3d.yaml

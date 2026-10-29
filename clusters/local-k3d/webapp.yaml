@@ -2,17 +2,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: infra
+  name: mywebapp
   namespace: flux-system
 spec:
   targetNamespace: application
   interval: 10m
   chart:
     spec:
-      chart: ../../../charts/infrastructure-namespace   # Points directly to your folder path in the repo!
+      chart: ../../charts/mywebapp   # Points directly to your folder path in the repo!
       sourceRef:
         kind: GitRepository
-        name: flux-systemcd        # Reuses your main repo source
+        name: flux-system        # Reuses your main repo source
         namespace: flux-system
       interval: 1m
   valuesFrom:
