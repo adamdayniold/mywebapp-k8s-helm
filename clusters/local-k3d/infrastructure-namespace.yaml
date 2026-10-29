@@ -12,13 +12,9 @@ spec:
       chart: ../../charts/infrastructure-namespace   # Points directly to your folder path in the repo!
       sourceRef:
         kind: GitRepository
-        name: flux-systemcd        # Reuses your main repo source
+        name: flux-system      # Reuses your main repo source
         namespace: flux-system
       interval: 1m
-  valuesFrom:
-    - kind: ConfigMap
-      name: mywebapp-values
-      valuesKey: values-k3d.yaml
   install:
     createNamespace: true        # Replaces CreateNamespace=true
   upgrade:
