@@ -20,8 +20,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./clusters/local-k3d/flux-system
-  prune: true
+  path: ./clusters/local-k3d
   sourceRef:
     kind: GitRepository
     name: flux-system
