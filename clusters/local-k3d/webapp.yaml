@@ -16,7 +16,7 @@ spec:
         namespace: flux-system
       interval: 1m
   valuesFiles:
-    - ./values-k3d.yaml
+    - ./charts/mywebapp/values-k3d.yaml
   install:
     createNamespace: true        # Replaces CreateNamespace=true
   upgrade:
