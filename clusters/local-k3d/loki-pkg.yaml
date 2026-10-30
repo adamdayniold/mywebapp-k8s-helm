@@ -43,7 +43,8 @@ spec:
     singleBinary:
       replicas: 1
       persistence:
-        enabled: false
+        enabled: true
+        storageClass: local-path
       resources:
         requests:
           cpu: 50m
