@@ -18,33 +18,57 @@ spec:
     controller:
       type: daemonset
     alloy:
+      mounts:
+        varlog: true
       configMap:
         content: |
-          // 2. Replaced API discovery with node filesystem file matching for DaemonSets
           local.file_match "pod_logs" {
             path_targets = [{
               __path__ = "/var/log/pods/*/*/*.log",
             }]
           }
 
+          discovery.relabel "pod_logs" {
+            targets = local.file_match.pod_logs.targets
+
+            rule {
+              source_labels = ["__path__"]
+              regex         = "/var/log/pods/([^_]+)_([^_]+)_[^/]+/([^/]+)/.*"
+              replacement   = "$1"
+              target_label  = "namespace"
+            }
+            rule {
+              source_labels = ["__path__"]
+              regex         = "/var/log/pods/([^_]+)_([^_]+)_[^/]+/([^/]+)/.*"
+              replacement   = "$2"
+              target_label  = "pod"
+            }
+            rule {
+              source_labels = ["__path__"]
+              regex         = "/var/log/pods/([^_]+)_([^_]+)_[^/]+/([^/]+)/.*"
+              replacement   = "$3"
+              target_label  = "container"
+            }
+          }
+
           loki.source.file "pod_logs" {
-            targets       = local.file_match.pod_logs.targets
+            targets       = discovery.relabel.pod_logs.output
             forward_to    = [loki.write.endpoint.receiver]
             tail_from_end = true
           }
 
           loki.write "endpoint" {
             endpoint {
-              url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+              url = "http://monitoring-loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
             }
           }
-    resources:
-      requests:
-        cpu: 50m
-        memory: 100Mi
-      limits:
-        cpu: 200m
-        memory: 300Mi
+      resources:
+        requests:
+          cpu: 50m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 300Mi
   install:
     createNamespace: true
   upgrade:
