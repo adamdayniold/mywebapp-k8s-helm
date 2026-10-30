@@ -7,7 +7,7 @@ set -e
 #   --path=clusters/local-k3d
 
 # flux bootstrap github \
-#   --owner=$GITHUB_USER \
+#   --owner=adamdayniold \
 #   --repository=mywebapp-k8s-helm \
 #   --branch=main \
 #   --path=clusters/local-k3d \
