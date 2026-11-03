@@ -3,12 +3,3 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
-
-configMapGenerator:
-  - name: mywebapp-values
-    namespace: flux-system
-    files:
-      - values-k3d.yaml=../../../charts/mywebapp/values-k3d.yaml
-
-generatorOptions:
-  disableNameSuffixHash: true

@@ -1,13 +1,3 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: metrics-server
-  namespace: flux-system
-spec:
-  interval: 1h
-  type: default
-  url: https://kubernetes-sigs.github.io/metrics-server/
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -29,10 +19,8 @@ spec:
       - --kubelet-insecure-tls
   install:
     createNamespace: true
-    # Flux uses Server-Side Apply by default via its patch/apply methods
   upgrade:
     remediation:
       retries: 3
-  # This mimics Argo CD's automated selfHeal and prune
   driftDetection:
     mode: enabled

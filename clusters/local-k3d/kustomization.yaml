@@ -2,15 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - flux-system
-  - alloy-pkg.yaml
-  - autoscalers-pkg.yaml
-  - cert-manager-pkg.yaml
-  - gateway-api-crds-pkg.yaml
-  - grafana-repo.yaml
-  - infrastructure-namespace.yaml
-  - loki-pkg.yaml
-  - metrics-server-pkg.yaml
-  - ngf-pkg.yaml
-  - prometheus-pkg.yaml
-  - sealed-secrets-pkg.yaml
-  - webapp.yaml
+  - ../../infrastructure
+  - ../../monitoring
+  - ../../apps

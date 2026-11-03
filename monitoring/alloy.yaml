@@ -6,6 +6,8 @@ metadata:
 spec:
   targetNamespace: monitoring
   interval: 10m
+  dependsOn:
+    - name: loki
   chart:
     spec:
       chart: alloy

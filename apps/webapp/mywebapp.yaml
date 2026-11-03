@@ -2,23 +2,31 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: infra
+  name: mywebapp
   namespace: flux-system
 spec:
   targetNamespace: application
   interval: 10m
+  dependsOn:
+    - name: infra
+    - name: ngf
+    - name: autoscalers
   chart:
     spec:
-      chart: ../../charts/infrastructure-namespace   # Points directly to your folder path in the repo!
+      chart: ./charts/mywebapp
+      reconcileStrategy: Revision
+      valuesFiles:
+        - ./charts/mywebapp/values.yaml
+        - ./charts/mywebapp/values-k3d.yaml
       sourceRef:
         kind: GitRepository
-        name: flux-system      # Reuses your main repo source
+        name: flux-system
         namespace: flux-system
       interval: 1m
   install:
-    createNamespace: true        # Replaces CreateNamespace=true
+    createNamespace: true
   upgrade:
     remediation:
       retries: 3
   driftDetection:
-    mode: enabled                # Replaces selfHeal: true & prune: true
+    mode: enabled

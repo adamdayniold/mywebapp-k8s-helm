@@ -1,14 +1,3 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: cert-manager
-  namespace: flux-system
-spec:
-  interval: 1h
-  type: oci
-  url: oci://quay.io/jetstack/charts
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -26,10 +15,8 @@ spec:
         name: cert-manager
         namespace: flux-system
   values:
-    # Disable the flaky startup check job in local environments
     startupapicheck:
       enabled: false
-    # Optional: explicitly enable CRD installation if not already handled
     installCRDs: true 
   install:
     createNamespace: true
