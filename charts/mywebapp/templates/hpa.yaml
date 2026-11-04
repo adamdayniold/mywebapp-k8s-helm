@@ -14,8 +14,8 @@ spec:
   metrics:
     - type: Resource
       resource:
-        name: cpu
+        name: {{ .Values.hpa.metric.name }}
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.hpa.metric.targetUtilizationPercentage }}
 {{- end -}}

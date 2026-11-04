@@ -62,7 +62,7 @@ spec:
         storageClassName: {{ .Values.mongo.persistence.storageClass }}
         resources:
           requests:
-            storage: 5Gi
+            storage: {{ .Values.mongo.persistence.size }}
 
 ---
 apiVersion: v1

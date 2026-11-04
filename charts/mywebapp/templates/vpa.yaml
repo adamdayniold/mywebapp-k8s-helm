@@ -20,5 +20,5 @@ spec:
         maxAllowed:
           cpu: "{{ .Values.vpa.maxAllowed.cpu }}"
           memory: "{{ .Values.vpa.maxAllowed.memory }}"
-        controlledResources: ["memory"]
+        controlledResources: {{ toJson .Values.vpa.controlledResources }}
 {{- end -}}

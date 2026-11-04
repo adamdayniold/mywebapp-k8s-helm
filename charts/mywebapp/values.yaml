@@ -25,6 +25,9 @@ mongo:
     usernameKey: mongo-user
     passwordKey: mongo-password
     dbnameKey: mongo-db-name
+  persistence:
+    storageClass: ""
+    size: 5Gi
 webapp:
   image:
     repository: adamdayniold/crud-mongodb
@@ -52,8 +55,10 @@ webapp:
 hpa:
   enabled: true
   minReplicas: 1
-  maxReplicas: 1
-  targetCPUUtilizationPercentage: 50
+  maxReplicas: 3
+  metric:
+    name: cpu
+    targetUtilizationPercentage: 50
 vpa:
   enabled: true
   updateMode: "Auto"
@@ -63,6 +68,7 @@ vpa:
   maxAllowed:
     cpu: 1
     memory: 1Gi
+  controlledResources: ["memory"]
 gateway:
   enabled: true
   name: my-gateway
