@@ -12,7 +12,8 @@ KEY_BACKUP=secrets/sealed-secrets-key.yaml
 
 if ! k3d cluster list "$CLUSTER" >/dev/null 2>&1; then
   k3d cluster create "$CLUSTER" \
-    -p "80:80@loadbalancer" -p "443:443@loadbalancer"
+    -p "80:80@loadbalancer" -p "443:443@loadbalancer" \
+    --k3s-arg "--disable=traefik@server:*"
 fi
 
 # Restore the old sealing key so existing SealedSecrets still decrypt
