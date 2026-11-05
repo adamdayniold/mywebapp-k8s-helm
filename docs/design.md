@@ -45,7 +45,13 @@ Plaintext secrets never go in the chart or in Git. Raw files live in `secrets/` 
    This writes `charts/mywebapp/templates/secret.yaml` and `monitoring/grafana-admin-secret.yaml`, using the cert in `secrets/pub-cert.pem`.
 3. Commit the SealedSecrets. The controller (`kube-system-sealed-secrets` in `kube-system`) decrypts them in-cluster.
 
-Sealed secrets are bound to the cluster's key. After rebuilding the cluster, run the script with `--refresh-cert` to fetch the new certificate and re-seal. To keep secrets valid across rebuilds, back up the key to `secrets/sealed-secrets-key.yaml`; `bootstrap.sh` restores it if present.
+Sealed secrets are bound to the cluster's private key, which lives in the cluster. Stopping and starting the cluster keeps it; deleting the cluster loses it. To keep secrets valid across rebuilds, back up the key to `secrets/sealed-secrets-key.yaml`; `bootstrap.sh` applies it before Flux installs the controller, so the controller reuses the old key and the committed SealedSecrets still decrypt. The controller rotates its key every 30 days and keeps the old ones, so refresh the backup now and then:
+
+```bash
+kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > secrets/sealed-secrets-key.yaml
+```
+
+`seal-secrets.sh` is only run by hand: when a password changes (edit the raw file first), or after a rebuild without the key backup (`--refresh-cert` fetches the new cluster's certificate). Flux and `bootstrap.sh` never run it. Treat the key backup like a password: it is git-ignored, and anyone holding it can decrypt the SealedSecrets.
 
 ## Observability
 

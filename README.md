@@ -11,6 +11,7 @@ A GitOps-managed Kubernetes platform for a Next.js + MongoDB web app, running lo
 - **GitOps with Flux:** three Kustomizations (`infrastructure`, then `monitoring` and `apps`) with explicit `dependsOn` ordering, so CRDs always exist before anything uses them.
 - **Gateway API** ingress with NGINX Gateway Fabric and cert-manager TLS.
 - **Sealed Secrets:** encrypted secrets that are safe to commit.
+- **Persistent storage:** Mongo runs as a StatefulSet on a PVC, and its data survives pod restarts.
 - **Autoscaling:** HPA on CPU (1-3 replicas) and VPA on memory only, so they don't fight.
 - **Observability:** Prometheus and Grafana for metrics, Alloy and Loki for logs.
 
