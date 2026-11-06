@@ -2,9 +2,7 @@
 
 A GitOps-managed Kubernetes platform for a Next.js + MongoDB web app, running locally on k3d. Flux reconciles everything from this repo: add-ons, the app's Helm chart, TLS, secrets, autoscaling and observability.
 
-<!-- TODO: add screenshot: ![My Webapp Overview dashboard](docs/grafana-overview.png) -->
-
-> Draft note: **[FILL IN]** markers are gaps only you can fill. Resolve them and delete this note before publishing.
+![Grafana dashboard: Kubernetes / Compute Resources / Namespace (Pods) for the application namespace](docs/grafana-overview.png)
 
 ## What this shows
 
@@ -89,6 +87,4 @@ kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-stack-grafana 
 
 ## Related work
 
-- Infrastructure as code: Terraform for DigitalOcean droplets and firewall rules **[FILL IN: repo link]**
-- Configuration management: Ansible playbooks **[FILL IN: repo link]**
 - Planned: floci (local AWS emulator) with Terraform for VPC/IAM/S3, probably in a separate repo.
