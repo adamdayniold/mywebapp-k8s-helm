@@ -74,6 +74,14 @@ Then open the app and Grafana. The routes match the host `webapp.local`, so add 
 kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-stack-grafana 3000:80   # http://localhost:3000
 ```
 
+## The application image
+
+The webapp runs the image `adamdayniold/crud-mongodb`, built and published by the pipeline in [application-container-box](https://github.com/adamdayniold/application-container-box). That pipeline tests and builds once on its `stage` branch and pushes an immutable `sha-<commit>` tag. A release to `main` only retags the same image as `:production`, so nothing is rebuilt.
+
+- **Tag:** `charts/mywebapp/values.yaml` pins `webapp.image.tag` to a `sha-<commit>` tag, not the moving `:stage` tag. The running image is therefore provable (`kubectl describe pod` shows the digest), and a node cannot keep serving a stale cached `:stage`.
+- **Updating it:** after a new `stage` build, change that one line and push. Flux sees the Git change and rolls the pod. To roll back, revert the commit.
+- **Probes:** liveness uses `/api/health` (no database access) and readiness uses `/api/health/ready` (pings Mongo), set per probe under `webapp.livenessProbe.path` and `webapp.readinessProbe.path`. A Mongo outage makes the pod unready without restarting it.
+
 ## More detail
 
 - [Design notes](docs/design.md): layout, design decisions, secrets workflow, observability.
@@ -83,7 +91,12 @@ kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-stack-grafana 
 
 - The cluster is created with k3s's bundled Traefik disabled. Otherwise it holds ports 80/443, the NGF `svclb` pod stays `Pending`, and requests to `webapp.local` get Traefik's 404.
 - The app only logs at startup, so its log panel is sparse until it logs requests.
+- The image tag in `values.yaml` is bumped by hand after each `stage` build. Planned: Flux image automation, which needs a sortable tag format from the application's CI.
 - Planned: request-level metrics, an SLO-based alert and a blackbox probe.
+
+## Related repositories
+
+- [application-container-box](https://github.com/adamdayniold/application-container-box): the app (Next.js + MongoDB), its Dockerfile and the CI/CD pipeline that builds the image this chart deploys.
 
 ## Related work
 
