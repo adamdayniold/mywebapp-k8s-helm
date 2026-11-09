@@ -31,13 +31,14 @@ mongo:
 webapp:
   image:
     repository: adamdayniold/crud-mongodb
-    tag: "stage"
+    tag: "sha-17539091c735be3cd901ddd25999cb17d9c7ff87"
     pullPolicy: IfNotPresent
-  probePath: "/"
   livenessProbe:
+    path: "/api/health"
     initialDelaySeconds: 15
     periodSeconds: 10
   readinessProbe:
+    path: "/api/health/ready"
     initialDelaySeconds: 5
     periodSeconds: 10
   service:
