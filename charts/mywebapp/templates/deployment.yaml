@@ -56,13 +56,13 @@ spec:
               cpu: "{{ .Values.webapp.resources.limits.cpu }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.webapp.probePath }}"
+              path: "{{ .Values.webapp.livenessProbe.path }}"
               port: {{ .Values.webapp.service.port }}
             initialDelaySeconds: {{ .Values.webapp.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.webapp.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.webapp.probePath }}"
+              path: "{{ .Values.webapp.readinessProbe.path }}"
               port: {{ .Values.webapp.service.port }}
             initialDelaySeconds: {{ .Values.webapp.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.webapp.readinessProbe.periodSeconds }}
