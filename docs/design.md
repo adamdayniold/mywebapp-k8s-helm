@@ -55,6 +55,6 @@ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-ke
 
 ## Observability
 
-- **Metrics:** Prometheus scrapes cAdvisor, kube-state-metrics and node-exporter. Dashboard panels show CPU and memory per pod for the `application` namespace.
+- **Metrics:** Prometheus scrapes cAdvisor, kube-state-metrics and node-exporter, and the app's own `/api/metrics` endpoint through a ServiceMonitor (`charts/mywebapp/templates/servicemonitor.yaml`), which gives request counts and latency per route.
 - **Logs:** Alloy tails `/var/log/pods/*/*/*.log` on each node, derives `namespace`, `pod` and `container` labels from the file path, and pushes to Loki. Example query: `{namespace="application", pod=~"mongo.*"}`.
-- **Dashboards:** Grafana with a custom "My Webapp Overview" dashboard (CPU, memory, logs).
+- **Dashboards:** Grafana ships the kube-prometheus-stack dashboards, plus a provisioned "Webapp Metrics" dashboard (request rate, error rate, p95 latency per route). It is stored as a ConfigMap in `monitoring/dashboards/webapp-metrics.yaml` and loaded by Grafana's sidecar through the `grafana_dashboard` label. Grafana has no persistence, so a dashboard drawn in the UI is lost on restart: export the JSON and commit it instead.
