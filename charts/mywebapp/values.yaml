@@ -31,7 +31,7 @@ mongo:
 webapp:
   image:
     repository: adamdayniold/crud-mongodb
-    tag: "sha-ef32d8aa697dd8fa2d287db260d4b4a9797f562c"
+    tag: "sha-b183ca7f0a814564c9b198d16f838b70df45471c"
     pullPolicy: IfNotPresent
   livenessProbe:
     path: "/api/health"
@@ -70,6 +70,11 @@ vpa:
     cpu: 1
     memory: 1Gi
   controlledResources: ["memory"]
+metrics:
+  serviceMonitor:
+    enabled: true
+    path: /api/metrics
+    interval: 30s
 gateway:
   enabled: true
   name: my-gateway
