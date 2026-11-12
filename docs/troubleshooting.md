@@ -31,3 +31,15 @@ Problems hit while building this repo, with cause, fix and lesson.
 - *Causes:* `/var/log` was not mounted into Alloy, no namespace label existed, and the push URL named a service that did not exist.
 - *Fix:* `alloy.mounts.varlog: true`, a relabel step, and the correct `monitoring-loki` URL.
 - *Lesson:* check what the pipeline actually ships (label values, "start tailing file" logs) before blaming the query.
+
+## Grafana had no Loki data source
+- *Symptom:* Explore offered only Prometheus, so the logs in Loki could not be queried although Alloy was pushing to it.
+- *Cause:* no Loki data source was provisioned. Grafana has no persistence, so one added by hand in the UI does not survive a restart.
+- *Fix:* `grafana.additionalDataSources` in `monitoring/kube-prometheus-stack.yaml`, with the same Loki service URL that Alloy pushes to.
+- *Lesson:* anything created in the Grafana UI is temporary here. Put it in Git (the same goes for dashboards).
+
+## JSON log lines did not parse in Loki
+- *Symptom:* app log lines in Loki started with `2026-11-12T11:36:26.1Z stdout F `, so `| json` could not parse a JSON log.
+- *Cause:* the kubelet writes container logs in CRI format, and `loki.source.file` ships the raw line, prefix included.
+- *Fix:* a `loki.process` component with `stage.cri {}` between `loki.source.file` and `loki.write` in `monitoring/alloy.yaml`. It only affects new lines; old ones keep the prefix.
+- *Lesson:* look at one raw line in Explore before writing LogQL. Also, `tail_from_end = true` skips what a pod wrote before Alloy noticed its file, so a new pod's first startup lines can be missing; to test the pipeline, write a line yourself (`echo test > /proc/1/fd/1` inside the pod).
