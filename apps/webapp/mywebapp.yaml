@@ -11,6 +11,7 @@ spec:
     - name: infra
     - name: ngf
     - name: autoscalers
+    - name: kube-prometheus-stack
   chart:
     spec:
       chart: ./charts/mywebapp

@@ -92,6 +92,8 @@ kind: Service
 metadata:
   name: webapp-service
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: webapp
 spec:
   type: {{ .Values.webapp.service.type }}
   selector:
