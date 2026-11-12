@@ -55,8 +55,13 @@ spec:
 
           loki.source.file "pod_logs" {
             targets       = discovery.relabel.pod_logs.output
-            forward_to    = [loki.write.endpoint.receiver]
+            forward_to    = [loki.process.pod_logs.receiver]
             tail_from_end = true
+          }
+
+          loki.process "pod_logs" {
+            stage.cri {}
+            forward_to = [loki.write.endpoint.receiver]
           }
 
           loki.write "endpoint" {
