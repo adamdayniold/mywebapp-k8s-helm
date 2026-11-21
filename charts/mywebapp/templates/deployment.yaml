@@ -14,6 +14,9 @@ spec:
       labels:
         app: webapp
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           # 1. The Hard Requirement (Must match)
@@ -47,6 +50,14 @@ spec:
         - name: webapp
           image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
           imagePullPolicy: {{ .Values.webapp.image.pullPolicy | default "IfNotPresent" }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           resources:
             requests:
               memory: "{{ .Values.webapp.resources.requests.memory }}"
