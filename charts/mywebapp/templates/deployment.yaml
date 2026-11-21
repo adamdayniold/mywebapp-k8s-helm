@@ -80,18 +80,18 @@ spec:
           ports:
             - containerPort: {{ .Values.webapp.service.targetPort }}
           env:
-            - name: DB_USERNAME
+            - name: MONGODB_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mongo.secret.name }}
                   key: {{ .Values.mongo.secret.usernameKey }}
-            - name: DB_PASSWORD
+            - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mongo.secret.name }}
                   key: {{ .Values.mongo.secret.passwordKey }}
             - name: MONGODB_URI
-              value: "mongodb://$(DB_USERNAME):$(DB_PASSWORD)@mongo-service:{{ .Values.mongo.service.targetPort }}"
+              value: "mongodb://mongo-service:{{ .Values.mongo.service.targetPort }}"
             - name: MONGODB_DB
               valueFrom:
                 secretKeyRef:
