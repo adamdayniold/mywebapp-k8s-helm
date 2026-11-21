@@ -31,7 +31,7 @@ mongo:
 webapp:
   image:
     repository: adamdayniold/crud-mongodb
-    tag: "sha-8e5329f267b9cf450425caee5ba5482d007257bf"
+    tag: "sha-f5c9955f291e207d0d0e8c1801c51e1382e9b41f"
     pullPolicy: IfNotPresent
   livenessProbe:
     path: "/api/health"
